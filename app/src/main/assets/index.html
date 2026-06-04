@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>LanScreenDupe Viewer</title>
+    <style>
+        html, body {
+            margin: 0; padding: 0; width: 100%; height: 100%; height: 100dvh;
+            overflow: hidden; background: #000; color: white; touch-action: none; position: fixed;
+        }
+        #v { width: 100%; height: 100%; height: 100dvh; object-fit: contain; display: block; }
+        .btn {
+            background: rgba(40, 167, 69, 0.9); color: white; border: 2px solid #fff;
+            padding: 20px 30px; border-radius: 15px; font-family: sans-serif;
+            font-size: 20px; font-weight: bold; cursor: pointer;
+        }
+        #btn-container {
+            position: fixed; top: 20px; right: 20px; display: flex;
+            flex-direction: column; gap: 15px; z-index: 100; width: 220px;
+        }
+        #start_btn {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 1000; display: none;
+        }
+        .btn-secondary { background: rgba(0,0,0,0.7); width: 100%; }
+    </style>
+</head>
+<body>
+    <video id="v" playsinline muted autoplay></video>
+    <button id="start_btn" class="btn">Enable Audio</button>
+    <div id="btn-container">
+        <button id="fs" class="btn btn-secondary">Fullscreen</button>
+        <button id="hide_btn" class="btn btn-secondary">Hide UI</button>
+    </div>
+
+    <script>
+        const v = document.getElementById('v');
+        const startBtn = document.getElementById('start_btn');
+        const btnContainer = document.getElementById('btn-container');
+
+        const unlock = () => {
+            v.muted = false;
+            v.play().catch(() => {});
+            startBtn.style.display = 'none';
+        };
+
+        startBtn.onclick = unlock;
+        document.getElementById('fs').onclick = () => {
+            unlock();
+            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+            else if (document.documentElement.webkitRequestFullscreen) document.documentElement.webkitRequestFullscreen();
+            btnContainer.style.display = 'none';
+        };
+        document.getElementById('hide_btn').onclick = () => btnContainer.style.display = 'none';
+		const pc = new RTCPeerConnection();
+        //If you trim out from here (line ~57) to line ~102 you would have a pure viewer mode only webpage
+		let dc = null;
+        let cache = { vw: 0, vh: 0, cw: 0, ch: 0, ox: 0, oy: 0, dw: 0, dh: 0, };
+		
+        function recompute() {
+            const r = v.getBoundingClientRect();
+            cache.vw = v.videoWidth;
+			cache.vh = v.videoHeight;
+            cache.cw = v.clientWidth;
+			cache.ch = v.clientHeight;
+            if (!cache.vw || !cache.vh) return;
+            const vr = cache.vw / cache.vh, er = cache.cw / cache.ch;
+            if (er > vr) {
+                cache.dw = cache.ch * vr;
+				cache.dh = cache.ch;
+                cache.ox = r.left + (cache.cw - cache.dw) / 2;
+				cache.oy = r.top;
+            } else {
+                cache.dw = cache.cw;
+				cache.dh = cache.cw / vr;
+                cache.ox = r.left;
+				cache.oy = r.top + (cache.ch - cache.dh) / 2;
+            }
+        }
+
+        let isDown = false;
+        v.addEventListener('pointerdown', e => {
+            if (v.videoWidth !== cache.vw || v.clientWidth !== cache.cw) recompute();
+            isDown = true; v.setPointerCapture(e.pointerId); sendEvent('d', e);
+        });
+        v.addEventListener('pointermove', e => { if (isDown) sendEvent('m', e); });
+        v.addEventListener('pointerup', e => { if (isDown) { isDown = false; sendEvent('u', e); } });
+        v.addEventListener('pointercancel', e => { if (isDown) { isDown = false; sendEvent('u', e); } });
+
+        function sendEvent(type, e) {
+            let x = ((e.clientX - cache.ox) / cache.dw).toFixed(3);
+            let y = ((e.clientY - cache.oy) / cache.dh).toFixed(3); console.log(x,y);
+            if (dc && dc.readyState === 'open') {
+			    if (x>1) x=1.000;
+				if (x<0) x=0.000;
+				if (y>1) y=1.000;
+				if (y<0) y=0.000;
+                dc.send(`${type},${x},${y}`)
+            }
+        }
+        pc.ondatachannel = e => dc = e.channel;
+		
+		
+        pc.ontrack = e => {
+            if (e.track.kind === 'audio' && v.muted) startBtn.style.display = 'block';
+            if (v.srcObject !== e.streams[0]) {
+                v.srcObject = e.streams[0];
+                v.play();
+            }
+        };
+        pc.onicecandidate = e => { if (!e.candidate) fetch('/answer', { method: 'POST', body: pc.localDescription.sdp }); };
+
+        async function init() {
+            let offer = null;
+            while (!offer) {
+                offer = await fetch('/offer').then(r => r.ok ? r.text() : null);
+                if (!offer) await new Promise(r => setTimeout(r, 500));
+            }
+            await pc.setRemoteDescription({ type: 'offer', sdp: offer });
+            const answer = await pc.createAnswer();
+            await pc.setLocalDescription(answer);
+        }
+        init();
+    </script>
+</body>
+</html>

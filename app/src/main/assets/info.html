@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LanScreenDupe (1.0) Readme</title>
+
+<style>
+  :root{
+    --bg:#102210;
+    --panel:#0c0d0e;
+    --text:#e6eef6;
+    --muted:#aab6c4;
+    --accent:#20FFC4;
+    --max-width:900px;
+  }
+  html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
+  .wrap{box-sizing:border-box;max-width:var(--max-width);margin:28px auto;padding:28px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.004));border-radius:10px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 6px 30px rgba(0,0,0,0.6);}
+  header{display:flex;align-items:baseline;gap:12px;margin-bottom:18px}
+  h1{font-size:1.35rem;margin:0;color:var(--text);font-weight:600;letter-spacing:0.2px}
+  .meta{color:var(--muted);font-size:.9rem}
+  main{max-height:72vh;overflow:auto;padding-right:8px}
+  h2{font-size:1.05rem;margin:18px 0 8px 0;color:var(--accent);font-weight:600}
+  h3{font-size:.98rem;margin:14px 0 6px 0;color:var(--text);font-weight:600}
+  p{line-height:1.55;margin:8px 0;color:var(--muted)}
+  ul,ol{margin:8px 0 8px 1.1rem;color:var(--muted);line-height:1.5}
+  pre,code{font-family:Menlo,Consolas,monospace;background:rgba(255,255,255,0.02);padding:6px 8px;border-radius:6px;color:#dbe9ff;overflow:auto}
+  pre{padding:12px;border-left:3px solid rgba(255,255,255,0.02);white-space:pre-wrap}
+  .note{display:inline-block;padding:6px 8px;border-radius:8px;background:rgba(58,160,255,0.07);color:var(--accent);font-weight:600;margin:8px 0}
+  footer{margin-top:14px;color:var(--muted);font-size:.85rem}
+  /* scrollbar thin + subtle */
+  main::-webkit-scrollbar{width:10px}
+  main::-webkit-scrollbar-thumb{background:linear-gradient(#1f2326,#121315);border-radius:10px;border:2px solid transparent;background-clip:padding-box}
+  @media (max-width:720px){
+    .wrap{margin:12px;padding:18px}
+    h1{font-size:1.1rem}
+  }
+</style>
+<style id="__web-inspector-hide-shortcut-style__" class="__web-inspector-hide__marker-shortcut__">.__web-inspector-hide__marker-shortcut__::marker, 
+.__web-inspector-hide-shortcut__, .__web-inspector-hide-shortcut__ *
+{
+    visibility: hidden !important;
+}
+</style></head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>LanScreenDupe - a screen mirroring application for outdoors photography</h1>
+      <div class="meta">V1 • 2026</div>
+    </header>
+
+    <main>
+      
+
+      <div class="note">Fully offline wireless screen mirroring from an Android device to anything with a web browser</div>
+      <h2>Overview</h2>
+      <p>This app mirrors the screen of an Android device to any device on a shared Wi-Fi network. Wireless, yet completely offline - it never talks to the "real" Internet!
+<br>There are NO bandwidth costs or requirements for 3G/4G/5G or wired Internet!
+<br>The app is made for advanced photography techniques in remote areas with no Internet connectivity and mobile devices with constrained battery capacity.
+
+<br>It is inspired by the "scrcpy" terminal program used for screen mirroring to desktop computers (Windows, Linux), however that program is impractical for outdoors usecases and limited energy usecases. <br>This app provides a simple UI and streamlined code logic for optimal battery life duration, app performance and user convenience. The use of a WebRTC encoded video stream is a major upgrade over other similar apps!
+<br>It is even a good substitute for the "scrcpy" program itself, because it skips all the elaborate steps needed to get it started.
+<br>The screen mirroring mode is very straightforward, and you can also enable remote touch control and two audio modes!
+<br><br></p>
+
+      <h2>Quick Start</h2>
+      <ol>
+        <li class="">Using the app</li><br>Install the app
+<br><br>
+For outdoors use start a hotspot/bluetooth tether on any device and connect the other one to it. The app takes any form of common wireless network - even a 3rd intermediate device set up as the hotspot (functionally a router) works too.<br>
+
+For home use it's easier to connect all devices to your home Wi-Fi. Your PC plugged in with an ethernet cable is a valid connection too!<br><br>Open up the app and accept the screen sharing permission
+<br><br>Take a look at the settings and update as needed. You can click among the preset options or set a custom value in the text box. You can grant the touch accesibility permission to send remote taps and even turn on the audio options to transmit different modes of microphone capture!
+<br>You can use the "lock tap coordinates after first click" option to set a static position for repeating taps. Use this if you want to reliably tap the same location. For example the shutter button of a camera device without needing hand precision on every tap. (The first tap sets the coordinates for all consecutive taps)
+
+<br><br>
+Open up a web browser on a remote device and load the URL as suggested by the message on top. You will most likely see a BLANK canvas until you MOVE something on screen of the host device!<br>Another quirk to keep in mind is that you need to disable auto-rotate. So far it has been impossible to prevent image rotation from the video stream when auto-rotate is on. It causes display orientation mis-alignment and tap coordinates mis-alignment If you rotate the Android device during a session. Make sure to start the stream in your desired orientation!<br><br>The last client/web browser to load the page takes the stream. The settings set in the app's menu apply the moment a client/web browser loads/reloads the page.<br><br><br>
+        <li>Understanding the capture settings
+<br><br>
+
+Bitrate settings between 0.5 to 5Mbps are for battery conservation and decluttering the wireless communications nearby. 8Mbps and up is costly in CPU capacity, battery drain and heat.
+<br><br>It's pereferable to keep the quality (downsampling) setting low. You most likely don't need perfect clarity of the image being mirrored. In photographic scenarios the captured images would have much higher quality than even the native image of the camera device's screen anyway.<br><br>
+The framerate setting should be a careful balance. At high values it might give a good sense of response but might cause stuttering lag and battery drain. At low values it might be inconvenient if used for quicker actions and interactions.<br><br>
+You can grant the touch access permissions using the button, but the menu navigation after that varies device to device. In most cases the menu has been made obfuscated by design, because these accesibiliy settings are regularly abused in social engineering scams. For this app you can be certain there are no risks, as this it's completely offline with complete privacy. It doesn't even have stored local user data!<br><br></li>
+        <li>User advice</li>
+<br>When using the app for photographic usecases you might be better off using a bluetooth device to trigger the shutter of your camera device. Holding a phone in your hands for selfies is more limiting than using a small bluetooth gadget like a stripped down selfie stick or ear pods and similar. You can also consider discrete foot operated gadgets, devices for cheating on student exams and so on.<br><br>Don't forget to dim the brightness of your camera device. It increases battery life and reduces the risk of overheating (risk of performance degradation or even complete shutdowns)
+<br>
+<br>
+A video recording might be a far better way to capture your scene. Video has encoding (compression for data efficiency), which means it can capture more quality and detail in a few seconds of 30FPS footage than a 5 photo burst. Many good snapshots are a result of accidental luck, which can only be captured in a video recording. Shoot a video while on site, return to your base and carefully pull out the few perfect frames from your session.
+
+<br><br><li>General usecase
+<br><br>Yes, you can open up the browser page from a desktop computer or a laptop browser too. Even if scrcpy already exists and is functinally superior in every way, it still takes toggling a few developer options and command line knowledge.<br>You can also (probably; I can't test it) use devices like iPhones, iPads, Chromebooks and similar to view the mirrored screen in their browser too.<br><br></li></ol>
+
+      <h2>Why make your own app?</h2>
+
+      <h3>Encountering a problem</h3>
+      <p>I have a problem. I need to take good pictures of myself, but there are many problems with the conventional methods.<br>Using the selfie camera forces you to keep the camera close to your face. Fisheye effects bubble out all your facial features in a very ugly way. Selfie cameras are also a much lower quality camera with no optical image stabilization. If you use a selfie stick you can't see much in the preview of your screen, and it quickly fatigues your hand and wrist.<br><br>I have thought about mirroring screen photography for a while and even had a few excellent photo sessions using a laptop with the scrcpy command, but couldn't find an app for smartphones that offers the basic functionality I need. If I were to go the "official route" I would have to spend mobile data to stream video over 4G between two smartphones. It would also require setup and tinkering with proprietary applications every time I went out. Most of them require a subscription and have data privacy issues anyway. I don't like it.
+</p> <br>
+
+
+      <h3>Building the solution</h3>
+      <p>After battling for ideas on how to make use of the existing programs I had to accept my fate as a Kotlin dev yet again. The lack of basic wireless tools and applications for Android meant it was time to take things into my own hands. I concluded it was easier for me to build an app from scratch than making use of existing apps and programs. It's 2026 and chatbots are now pretty mature. It's easier than ever to learn something and build things without specialized training. I have the ideas and ChatGPT and Gemini have the information.
+</p><br>
+
+      <h3>Ideology and the engineer's mindset</h3><p>I need to build something for the people that respects the user's intelligence, privacy and unique usecases. I must build something simple and straightforward that ties together the data communications and handles the permissions checks.
+
+<br><br>Using web pages - allows use outside of Android. JavaScript code provides further transparency about what is being executed.
+<br><br>No apply button - straightforward user flow, much simpler code logic.
+
+<br>
+
+Preset common values for the most important fields - fast user experience and showcase for intuitive understanding of the settings.
+<br><br>Stream the full screen - allows users to use it for photography with the factory camera app or use it for something completely different with any app.<br><br>Using WebRTC based internals - takes full advantage of the intelligence of WebRTC<br><br>Close the app almost stops everything. I wish it could kill -9 $PGID on close. However, the remote control permission requires a running process to maintain the setting state. This is why turning it on leaves a persistent micro process. Most systems require ongoing notification when a sensitive API is in use too, so it posts a notification about it too.  <br><br>The remote control runs on a small sub-process - the accessibility permission requires a running process. At an earlier iteration either the whole app had to run all the time even when "closed" (turns out closing an app on Android does almost nothing) or kill the process and have the user re-toggle it in settings on every use. I consider the first option unethical, especially for older systems that have far weaker battery, CPU and RAM management. The second option would ruin your outdoors photography experience. The third option was the hardest, but necessary and also a good reference for other app devs working on similar issues - make a minimum viable micro process that runs when the main app is closed. This introduces the problem of inter-process communications. It's even worse that an accessibility feature has to communicate using system broadcasts. The messages have to be open enough to cast across different process IDs, yet closed enough to protect from 3rd party apps injecting/reading tap and swipe actions. This is why the manifest file has a custom permission to isolate the broadcasts within the app's process group.
+<br><br>
+The app only runs on android 5.x.x or newer - the hardware of that era is below the bare minimum for livestreaming screen capture while also doing camera operations anyway. Support for older smartphones could be possbile but only with root access and would require a custom UDP based streaming protocol<br><br>
+In case you really need some custom functionality you can load up the project in Android Studio and develop it further. All the contents are readable, maintainable, simple and understandable. This project (just like the rest) is a good reference on using the various APIs and interfaces used.   
+</p><h2>Troubleshooting<ul>
+        <li>I loaded x.x.x.x:8080 in the browser. I don't see anything on screen.<br>That's typical in most cases. There needs to be some on-screen motion before the stream starts properly. <br><br>
+</li>
+        <li>When I rotate the screen the video preview rotates. Touch is glitched too.<br>Disable auto-rotate on your Android. This behavior is hard to fix in software.<br><br><li>REMOTE CONTROL button is RED and remote control doesn't work. But I toggled it ON in the settings!?<br>Restart your phone/tablet using the restart button. Never trust the power off button.
+<br><br></li></li><li>Swiping actions don't work<br>You might need to restart both the application and the web page multiple times until it un-glitches. On some Android versions you might have to adjust a unique setting - the swipe actions duration to get some or another UI elements to swipe properly</li><br><li>There is no audio<br>
+Check the state of the audio toggle. MIC mode has noise cancellation and suppresion, so it mainly transmits outside sounds. MIC (RAW) captures any audio, inluding noises and the device's speakers. MIC (RAW) and system volume above 40% is currently the only way to transmit any form of system sounds (for now)
+<br></li>
+<br>
+
+<li>How do I mount my Android to a wall or a post or something?<br>Check <a href="https://www.printables.com/@HotFilament_2333530">@HotFilament_2333530</a> for 3D printable models and check @hotfilament on YouTube for a full blog on the project.</li>
+      </ul></h2><p></p>
+<h2>Author</h2>
+      <pre><code>github.com/import-regex @hotfilament</code></pre>
+
+      <h2>License</h2>
+      <p><!-- Additional notes or references --></p>
+
+      <footer>All original work • GNU Affero General Public License v3.0</footer>
+    </main>
+  </div>
+
+</body></html>

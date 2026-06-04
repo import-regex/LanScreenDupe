@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Lan Screen Dupe</string>
+    <string name="accessibility_description">Enables remote control taps from the web viewer.</string>
+    <string name="accessibility_summary">Remote control for web viewer interaction.</string>
+    <string name="accessibility_service_label">Lan Screen Dupe Remote Control</string>
+    <string name="accessibility_service_settings_label">Remote Control Settings</string>
+</resources>
