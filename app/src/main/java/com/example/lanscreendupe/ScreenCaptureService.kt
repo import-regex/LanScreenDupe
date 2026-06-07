@@ -167,7 +167,9 @@ class ScreenCaptureService : Service() {
                 height = metrics.heightPixels
             }
 
-            capturer.startCapture(width, height, activeFps)
+            val captureWidth = (width / activeQuality).toInt().let { if (it % 2 != 0) it - 1 else it } //round to even number
+            val captureHeight = (height / activeQuality).toInt().let { if (it % 2 != 0) it - 1 else it }
+            capturer.startCapture(captureWidth, captureHeight, activeFps)
 
             val vt = f.createVideoTrack("VIDEO_TRACK", vs)
             videoTrack = vt
@@ -178,6 +180,11 @@ class ScreenCaptureService : Service() {
             }
 
             val pc = f.createPeerConnection(rtcConfig, object : SimplePeerConnectionObserver() {
+                override fun onIceConnectionChange(newState: PeerConnection.IceConnectionState) {
+                    if (newState == PeerConnection.IceConnectionState.CONNECTED || newState == PeerConnection.IceConnectionState.COMPLETED) {
+                        applyBitrateSettings() //the stream will continue using the correct settings
+                    }
+                }
                 override fun onIceGatheringChange(newState: PeerConnection.IceGatheringState) {
                     if (newState == PeerConnection.IceGatheringState.COMPLETE) {
                         generatedSdp = instance?.let { peerConnection?.localDescription?.description }
@@ -247,7 +254,7 @@ class ScreenCaptureService : Service() {
             val pc = peerConnection ?: return
             pc.setRemoteDescription(object : SimpleSdpObserver() {
                 override fun onSetSuccess() {
-                    applyBitrateSettings()
+                    applyBitrateSettings() //start the stream with the correct settings
                 }
             }, SessionDescription(SessionDescription.Type.ANSWER, sdpAnswer))
         }
@@ -268,9 +275,10 @@ class ScreenCaptureService : Service() {
                 if (track != null && track.kind() == "video") {
                     val parameters = sender.parameters
                     for (encoding in parameters.encodings) {
-                        encoding.maxBitrateBps = activeBitrateMbps * 1_000_000
+                        encoding.maxBitrateBps = (activeBitrateMbps.coerceAtLeast(1) * 1_000_000)
                         encoding.minBitrateBps = 100_000
-                        encoding.maxFramerate = activeFps
+                        encoding.maxFramerate = activeFps.coerceAtLeast(1)
+                        encoding.scaleResolutionDownBy = 1.0 //ensure no upscaling
                         encoding.networkPriority = 3
                         encoding.numTemporalLayers = 1 //use a single stream for the frames data
                     }
