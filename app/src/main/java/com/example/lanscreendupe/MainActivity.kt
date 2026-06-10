@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 
             val ip = getLocalIpAddress()
             if (ip == null) {
-                statusTextView?.text = "You need a valid wireless connection!"
+                statusTextView?.text = "You need a valid wireless connection! http://localhost:8080/info for details."
             } else {
                 statusTextView?.text = "Ready! Visit http://${ip}:8080\nOr http://${ip}:8080/info for more info"
             }
